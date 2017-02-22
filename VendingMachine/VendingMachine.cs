@@ -14,24 +14,24 @@ namespace VendingMachine
         private CreditCard _creditCard;
         private bool _valid;
         private int _choiceForCard;
-        private readonly ChoiceDictionary _choiceDictionary;
+        private readonly Dictionary<int, int> _choiceDictionary;
 
         public double Total { get { return _total; } }
 
         public VendingMachine()
         {
-            _choiceDictionary = new ChoiceDictionary();
+            _choiceDictionary = new Dictionary<int, int>();
         }
 
         public Can Deliver(int quantityKey)
         {
             var price = _prices.ContainsKey(quantityKey) ? _prices[quantityKey] : 0;
-            if (!_choices.Contains(quantityKey) || _choiceDictionary.GetValue(quantityKey) < 1 || _total < price)
+            if (!_choices.Contains(quantityKey) || _choiceDictionary[quantityKey] < 1 || _total < price)
             {
                 return null;
             }
 
-            _choiceDictionary.SetValue(quantityKey, _choiceDictionary.GetValue(quantityKey) - 1);
+            _choiceDictionary[quantityKey] = _choiceDictionary[quantityKey] - 1;
             _total -= price;
             return new Can { Type = quantityKey };
         }
@@ -100,9 +100,9 @@ namespace VendingMachine
 
         public Can DeliverChoiceForCard()
         {
-            if (_valid && _choices.IndexOf(_choiceForCard) > -1 && _choiceDictionary.GetValue(_choiceForCard) > 0)
+            if (_valid && _choices.IndexOf(_choiceForCard) > -1 && _choiceDictionary[_choiceForCard] > 0)
             {
-                _choiceDictionary.SetValue(_choiceForCard, _choiceDictionary.GetValue(_choiceForCard) - 1);
+                _choiceDictionary[_choiceForCard] = _choiceDictionary[_choiceForCard] - 1;
 
                 return new Can { Type = _choiceForCard };
             }
