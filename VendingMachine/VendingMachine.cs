@@ -17,19 +17,19 @@ namespace VendingMachine
         public Item Deliver(int itemType)
         {
             var price = _prices.ContainsKey(itemType) ? _prices[itemType] : 0;
-            if (!_choices.Contains(itemType) || _quantityDictionary.GetQuantity(itemType) < 1 || Total < price)
+            if (!_choices.Contains(itemType) || _quantityDictionary._quantities[itemType] < 1 || Total < price)
             {
                 return null;
             }
 
-            _quantityDictionary.SetQuantity(itemType, _quantityDictionary.GetQuantity(itemType) - 1);
+            _quantityDictionary._quantities[itemType] = _quantityDictionary._quantities[itemType] - 1;
             Total -= price;
             return new Item { Type = itemType };
         }
 
         public void AddChoice(int c, int n = int.MaxValue)
         {
-            _quantityDictionary.Add(c, n);
+            _quantityDictionary._quantities[c] = n;
             _choices.Add(c);
         }
 
@@ -87,9 +87,9 @@ namespace VendingMachine
 
         public Item DeliverChoiceForCard()
         {
-            if (_valid && _choices.IndexOf(_selectedCard) > -1 && _quantityDictionary.GetQuantity(_selectedCard) > 0)
+            if (_valid && _choices.IndexOf(_selectedCard) > -1 && _quantityDictionary._quantities[_selectedCard] > 0)
             {
-                _quantityDictionary.SetQuantity(_selectedCard, _quantityDictionary.GetQuantity(_selectedCard) - 1);
+                _quantityDictionary._quantities[_selectedCard] = _quantityDictionary._quantities[_selectedCard] - 1;
                 return new Item { Type = _selectedCard };
             }
             return null;
