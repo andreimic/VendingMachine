@@ -110,9 +110,9 @@ namespace VendingMachine
         public Can DeliverChoiceForCard()
         {
             var card = _selectedCard;
-            if (_valid && _choices.IndexOf(card) > -1 && _quantityValues[Array.IndexOf(_quantityKeys, card)] > 0)
+            if (_valid && _choices.IndexOf(card) > -1 && GetQuantity(card) > 0)
             {
-                _quantityValues[Array.IndexOf(_quantityKeys, card)] = _quantityValues[Array.IndexOf(_quantityKeys, card)] - 1;
+                DecrementQuantity(card);
                 return new Can { Type = card };
             }
             else
