@@ -31,14 +31,14 @@ namespace VendingMachine
                 return null;
             }
 
-            SetQuantity(GetQuantity(value) - 1);
+            DecrementQuantity(value);
             _total -= price;
             return new Can { Type = value };
         }
 
-        private void SetQuantity(int value)
+        private void DecrementQuantity(int value)
         {
-            _quantityValues[Array.IndexOf(_quantityKeys, value)] = GetQuantity(value);
+            _quantityValues[Array.IndexOf(_quantityKeys, value)] = GetQuantity(value) - 1;
         }
 
         private int GetQuantity(int value)
