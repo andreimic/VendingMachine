@@ -26,14 +26,24 @@ namespace VendingMachine
         public Can Deliver(int value)
         {
             var price = _prices.ContainsKey(value) ? _prices[value] : 0;
-            if (!_choices.Contains(value) || _quantityValues[Array.IndexOf(_quantityKeys, value)] < 1 || _total < price)
+            if (!_choices.Contains(value) || GetQuantity(value) < 1 || _total < price)
             {
                 return null;
             }
 
-            _quantityValues[Array.IndexOf(_quantityKeys, value)] = _quantityValues[Array.IndexOf(_quantityKeys, value)] - 1;
+            SetQuantity(GetQuantity(value) - 1);
             _total -= price;
             return new Can { Type = value };
+        }
+
+        private void SetQuantity(int value)
+        {
+            _quantityValues[Array.IndexOf(_quantityKeys, value)] = GetQuantity(value);
+        }
+
+        private int GetQuantity(int value)
+        {
+            return _quantityValues[Array.IndexOf(_quantityKeys, value)];
         }
 
         public void AddChoice(int c, int n = int.MaxValue)
