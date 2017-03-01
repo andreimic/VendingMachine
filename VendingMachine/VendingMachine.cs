@@ -8,16 +8,16 @@ namespace VendingMachine
     public class VendingMachine
     {
         private List<int> _choices = new List<int>();
-        private int[] _quantityKeys = {};
-        private int[] _quantityValues = {};
-        private double t;
+        private int[] _quantityKeys = { };
+        private int[] _quantityValues = { };
+        private double _total;
         private double _colaPrice;
         private Dictionary<int, double> _prices = new Dictionary<int, double>();
         private CreditCard _cc;
         private bool _valid;
-        private int ccc;
+        private int _selectedCard;
 
-        public double T { get { return t; } }
+        public double T { get { return _total; } }
 
         public VendingMachine()
         {
@@ -26,13 +26,13 @@ namespace VendingMachine
         public Can Deliver(int value)
         {
             var price = _prices.ContainsKey(value) ? _prices[value] : 0;
-            if (!_choices.Contains(value) || _quantityValues[Array.IndexOf(_quantityKeys, value)] < 1 || t < price)
+            if (!_choices.Contains(value) || _quantityValues[Array.IndexOf(_quantityKeys, value)] < 1 || _total < price)
             {
                 return null;
             }
 
-            _quantityValues[Array.IndexOf(_quantityKeys, value)] = _quantityValues[Array.IndexOf(_quantityKeys, value)]-1;
-            t -= price;
+            _quantityValues[Array.IndexOf(_quantityKeys, value)] = _quantityValues[Array.IndexOf(_quantityKeys, value)] - 1;
+            _total -= price;
             return new Can { Type = value };
         }
 
@@ -49,24 +49,19 @@ namespace VendingMachine
         {
             for (int i = 0; i < choices.Length; i++)
             {
-                int c = choices[i];
-                Array.Resize(ref _quantityKeys, _quantityKeys.Length + 1);
-                Array.Resize(ref _quantityValues, _quantityValues.Length + 1);
-                _quantityKeys[_quantityKeys.Length - 1] = c;
-                _quantityValues[_quantityValues.Length - 1] = counts[i];
-                _choices.Add(c);
+                AddChoice(choices[i], counts[i]);
             }
         }
 
         public void AddCoin(int v)
         {
-            t += v;
+            _total += v;
         }
 
         public double Change()
         {
-            var v = t;
-            t = 0;
+            var v = _total;
+            _total = 0;
             return v;
         }
 
@@ -77,11 +72,7 @@ namespace VendingMachine
 
         public void Stock(int choice, int quantity, double price)
         {
-            Array.Resize(ref _quantityKeys, _quantityKeys.Length + 1);
-            Array.Resize(ref _quantityValues, _quantityValues.Length + 1);
-            _quantityKeys[_quantityKeys.Length - 1] = choice;
-            _quantityValues[_quantityValues.Length - 1] = quantity;
-            _choices.Add(choice);
+            AddChoice(choice, quantity);
             _prices[choice] = price;
         }
 
@@ -103,16 +94,16 @@ namespace VendingMachine
 
         public void SelectChoiceForCard(int choice)
         {
-            ccc = choice;
+            _selectedCard = choice;
         }
 
         public Can DeliverChoiceForCard()
         {
-            var c = ccc;
-            if (_valid && _choices.IndexOf(c) > -1 && _quantityValues[Array.IndexOf(_quantityKeys, c)] > 0)
+            var card = _selectedCard;
+            if (_valid && _choices.IndexOf(card) > -1 && _quantityValues[Array.IndexOf(_quantityKeys, card)] > 0)
             {
-                _quantityValues[Array.IndexOf(_quantityKeys, c)] = _quantityValues[Array.IndexOf(_quantityKeys, c)]-1;
-                return new Can {Type = c};
+                _quantityValues[Array.IndexOf(_quantityKeys, card)] = _quantityValues[Array.IndexOf(_quantityKeys, card)] - 1;
+                return new Can { Type = card };
             }
             else
             {
