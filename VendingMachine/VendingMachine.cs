@@ -16,10 +16,6 @@ namespace VendingMachine
 
         public double Total { get; private set; }
 
-        public VendingMachine()
-        {
-        }
-
         public Can Deliver(int value)
         {
             var price = _prices.ContainsKey(value) ? _prices[value] : 0;
@@ -89,9 +85,9 @@ namespace VendingMachine
             return _prices[choice];
         }
 
-        public void AcceptCard(CreditCard myCC)
+        public void AcceptCard(CreditCard card)
         {
-            _creditCard = myCC;
+            _creditCard = card;
         }
 
         public void GetPinNumber(int pinNumber)
