@@ -149,7 +149,7 @@ namespace VendingMachine
             vendingMachine.AcceptCard(new CreditCard("holder name", "serial number", "card company", 1234));
             vendingMachine.SelectChoiceForCard(_colaChoice);
             vendingMachine.GetPinNumber(1234);
-            Can colaCan = vendingMachine.DeliverChoiceForCard();
+            Item colaCan = vendingMachine.DeliverChoiceForCard();
             Assert.IsNotNull(colaCan);
         }
 
@@ -162,7 +162,7 @@ namespace VendingMachine
             vendingMachine.AcceptCard(new CreditCard("holder name", "serial number", "card company", 1234));
             vendingMachine.SelectChoiceForCard(_colaChoice);
             vendingMachine.GetPinNumber(3456);
-            Can colaCan = vendingMachine.DeliverChoiceForCard();
+            Item colaCan = vendingMachine.DeliverChoiceForCard();
             Assert.IsNull(colaCan);
         }
 
@@ -176,7 +176,7 @@ namespace VendingMachine
             vendingMachine.AcceptCard(new CreditCard("holder name", "serial number", "card company", 1234));
             vendingMachine.SelectChoiceForCard(_fantaChoice);
             vendingMachine.GetPinNumber(1234);
-            Can colaCan = vendingMachine.DeliverChoiceForCard();
+            Item colaCan = vendingMachine.DeliverChoiceForCard();
             Assert.AreEqual(_fantaChoice, colaCan.Type);
         }
     }

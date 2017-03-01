@@ -16,7 +16,7 @@ namespace VendingMachine
 
         public double Total { get; private set; }
 
-        public Can Deliver(int value)
+        public Item Deliver(int value)
         {
             var price = _prices.ContainsKey(value) ? _prices[value] : 0;
             if (!_choices.Contains(value) || GetQuantity(value) < 1 || Total < price)
@@ -24,14 +24,14 @@ namespace VendingMachine
                 return null;
             }
 
-            DecrementQuantity(value);
+            SetQuantity(value, GetQuantity(value) - 1);
             Total -= price;
-            return new Can { Type = value };
+            return new Item { Type = value };
         }
 
-        private void DecrementQuantity(int value)
+        private void SetQuantity(int quantity, int value)
         {
-            _quantityValues[Array.IndexOf(_quantityKeys, value)] = GetQuantity(value) - 1;
+            _quantityValues[Array.IndexOf(_quantityKeys, quantity)] = value;
         }
 
         private int GetQuantity(int value)
@@ -100,18 +100,18 @@ namespace VendingMachine
             _selectedCard = choice;
         }
 
-        public Can DeliverChoiceForCard()
+        public Item DeliverChoiceForCard()
         {
             if (_valid && _choices.IndexOf(_selectedCard) > -1 && GetQuantity(_selectedCard) > 0)
             {
-                DecrementQuantity(_selectedCard);
-                return new Can { Type = _selectedCard };
+                SetQuantity(_selectedCard, GetQuantity(_selectedCard) - 1);
+                return new Item { Type = _selectedCard };
             }
             return null;
         }
     }
 
-    public class Can
+    public class Item
     {
         public int Type { get; set; }
     }
