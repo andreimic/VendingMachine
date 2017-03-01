@@ -7,44 +7,30 @@ namespace VendingMachine
     public class VendingMachine
     {
         private readonly List<int> _choices = new List<int>();
-        private int[] _quantityKeys = { };
-        private int[] _quantityValues = { };
         private readonly Dictionary<int, double> _prices = new Dictionary<int, double>();
         private CreditCard _creditCard;
         private bool _valid;
         private int _selectedCard;
+        private readonly QuantityDictionary _quantityDictionary = new QuantityDictionary();
 
         public double Total { get; private set; }
 
-        public Item Deliver(int value)
+        public Item Deliver(int itemType)
         {
-            var price = _prices.ContainsKey(value) ? _prices[value] : 0;
-            if (!_choices.Contains(value) || GetQuantity(value) < 1 || Total < price)
+            var price = _prices.ContainsKey(itemType) ? _prices[itemType] : 0;
+            if (!_choices.Contains(itemType) || _quantityDictionary.GetQuantity(itemType) < 1 || Total < price)
             {
                 return null;
             }
 
-            SetQuantity(value, GetQuantity(value) - 1);
+            _quantityDictionary.SetQuantity(itemType, _quantityDictionary.GetQuantity(itemType) - 1);
             Total -= price;
-            return new Item { Type = value };
-        }
-
-        private void SetQuantity(int quantity, int value)
-        {
-            _quantityValues[Array.IndexOf(_quantityKeys, quantity)] = value;
-        }
-
-        private int GetQuantity(int value)
-        {
-            return _quantityValues[Array.IndexOf(_quantityKeys, value)];
+            return new Item { Type = itemType };
         }
 
         public void AddChoice(int c, int n = int.MaxValue)
         {
-            Array.Resize(ref _quantityKeys, _quantityKeys.Length + 1);
-            Array.Resize(ref _quantityValues, _quantityValues.Length + 1);
-            _quantityKeys[_quantityKeys.Length - 1] = c;
-            _quantityValues[_quantityValues.Length - 1] = n;
+            _quantityDictionary.Add(c, n);
             _choices.Add(c);
         }
 
@@ -102,9 +88,9 @@ namespace VendingMachine
 
         public Item DeliverChoiceForCard()
         {
-            if (_valid && _choices.IndexOf(_selectedCard) > -1 && GetQuantity(_selectedCard) > 0)
+            if (_valid && _choices.IndexOf(_selectedCard) > -1 && _quantityDictionary.GetQuantity(_selectedCard) > 0)
             {
-                SetQuantity(_selectedCard, GetQuantity(_selectedCard) - 1);
+                _quantityDictionary.SetQuantity(_selectedCard, _quantityDictionary.GetQuantity(_selectedCard) - 1);
                 return new Item { Type = _selectedCard };
             }
             return null;
