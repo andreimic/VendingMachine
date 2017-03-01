@@ -1,23 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using CreditCardModule;
 
 namespace VendingMachine
 {
     public class VendingMachine
     {
-        private List<int> _choices = new List<int>();
+        private readonly List<int> _choices = new List<int>();
         private int[] _quantityKeys = { };
         private int[] _quantityValues = { };
-        private double _total;
-        private double _colaPrice;
-        private Dictionary<int, double> _prices = new Dictionary<int, double>();
-        private CreditCard _cc;
+        private readonly Dictionary<int, double> _prices = new Dictionary<int, double>();
+        private CreditCard _creditCard;
         private bool _valid;
         private int _selectedCard;
 
-        public double T { get { return _total; } }
+        public double Total { get; private set; }
 
         public VendingMachine()
         {
@@ -26,13 +23,13 @@ namespace VendingMachine
         public Can Deliver(int value)
         {
             var price = _prices.ContainsKey(value) ? _prices[value] : 0;
-            if (!_choices.Contains(value) || GetQuantity(value) < 1 || _total < price)
+            if (!_choices.Contains(value) || GetQuantity(value) < 1 || Total < price)
             {
                 return null;
             }
 
             DecrementQuantity(value);
-            _total -= price;
+            Total -= price;
             return new Can { Type = value };
         }
 
@@ -65,13 +62,13 @@ namespace VendingMachine
 
         public void AddCoin(int v)
         {
-            _total += v;
+            Total += v;
         }
 
         public double Change()
         {
-            var v = _total;
-            _total = 0;
+            var v = Total;
+            Total = 0;
             return v;
         }
 
@@ -94,12 +91,12 @@ namespace VendingMachine
 
         public void AcceptCard(CreditCard myCC)
         {
-            _cc = myCC;
+            _creditCard = myCC;
         }
 
         public void GetPinNumber(int pinNumber)
         {
-            _valid = new CreditCardModule.CreditCardModule(_cc).HasValidPinNumber(pinNumber);
+            _valid = new CreditCardModule.CreditCardModule(_creditCard).HasValidPinNumber(pinNumber);
         }
 
         public void SelectChoiceForCard(int choice)
@@ -109,16 +106,12 @@ namespace VendingMachine
 
         public Can DeliverChoiceForCard()
         {
-            var card = _selectedCard;
-            if (_valid && _choices.IndexOf(card) > -1 && GetQuantity(card) > 0)
+            if (_valid && _choices.IndexOf(_selectedCard) > -1 && GetQuantity(_selectedCard) > 0)
             {
-                DecrementQuantity(card);
-                return new Can { Type = card };
+                DecrementQuantity(_selectedCard);
+                return new Can { Type = _selectedCard };
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
     }
 

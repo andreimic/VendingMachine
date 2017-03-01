@@ -31,7 +31,7 @@ namespace VendingMachine
         public void ShouldReturnACanOfTheSelectedChoice()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.AddMultipleChoices(new int[] {_fantaChoice,_colaChoice}, new []{int.MaxValue, int.MaxValue} );
+            vendingMachine.AddMultipleChoices(new int[] { _fantaChoice, _colaChoice }, new[] { int.MaxValue, int.MaxValue });
             var can = vendingMachine.Deliver(_fantaChoice);
             Assert.AreEqual(_fantaChoice, can.Type);
         }
@@ -50,7 +50,7 @@ namespace VendingMachine
         public void ShouldHaveTotalZeroInitialy()
         {
             var vendingMachine = new VendingMachine();
-            Assert.AreEqual(0, vendingMachine.T);
+            Assert.AreEqual(0, vendingMachine.Total);
         }
 
         [TestMethod]
@@ -58,7 +58,7 @@ namespace VendingMachine
         {
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
-            Assert.AreEqual(5, vendingMachine.T);
+            Assert.AreEqual(5, vendingMachine.Total);
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace VendingMachine
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
             vendingMachine.AddCoin(1);
-            Assert.AreEqual(6, vendingMachine.T);
+            Assert.AreEqual(6, vendingMachine.Total);
         }
 
         [TestMethod]
@@ -85,14 +85,14 @@ namespace VendingMachine
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
             vendingMachine.Change();
-            Assert.AreEqual(0, vendingMachine.T);
+            Assert.AreEqual(0, vendingMachine.Total);
         }
 
         [TestMethod]
         public void ShouldAcceptCostForOption()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.Stock(_colaChoice,5,5.5);
+            vendingMachine.Stock(_colaChoice, 5, 5.5);
             var colaPrice = vendingMachine.GetPrice(_colaChoice);
             Assert.AreEqual(5.5, colaPrice);
         }
@@ -101,8 +101,8 @@ namespace VendingMachine
         public void ShouldAcceptDifferentCostsForOptions()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.Stock(_colaChoice,5,5.5);
-            vendingMachine.Stock(_fantaChoice,5,2.5);
+            vendingMachine.Stock(_colaChoice, 5, 5.5);
+            vendingMachine.Stock(_fantaChoice, 5, 2.5);
             var colaPrice = vendingMachine.GetPrice(_colaChoice);
             var fantaPrice = vendingMachine.GetPrice(_fantaChoice);
             Assert.AreEqual(5.5, colaPrice);
@@ -124,10 +124,10 @@ namespace VendingMachine
         public void ShouldSubstractPriceFromBalance()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.Stock(_colaChoice,5,3);
+            vendingMachine.Stock(_colaChoice, 5, 3);
             vendingMachine.AddCoin(5);
             vendingMachine.Deliver(_colaChoice);
-            Assert.AreEqual(2, vendingMachine.T);
+            Assert.AreEqual(2, vendingMachine.Total);
         }
 
         [TestMethod]
@@ -169,7 +169,7 @@ namespace VendingMachine
         [TestMethod]
         public void ShouldReturnTheCorrectChoiceWhenPayingByCard()
         {
-            var vendingMachine=new VendingMachine();
+            var vendingMachine = new VendingMachine();
             vendingMachine.AddChoice(_colaChoice);
             vendingMachine.AddChoice(_fantaChoice);
             vendingMachine.AddPrice(_colaChoice, 2.3);
@@ -177,7 +177,7 @@ namespace VendingMachine
             vendingMachine.SelectChoiceForCard(_fantaChoice);
             vendingMachine.GetPinNumber(1234);
             Can colaCan = vendingMachine.DeliverChoiceForCard();
-            Assert.AreEqual(_fantaChoice,colaCan.Type);
+            Assert.AreEqual(_fantaChoice, colaCan.Type);
         }
     }
 }
